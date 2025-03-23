@@ -626,7 +626,7 @@ pyhive==0.7.0
     # via apache-superset
 pyinstrument==4.4.0
     # via apache-superset
-pyjwt==2.10.1
+pyjwt==2.9.0
     # via
     #   -c requirements/base.txt
     #   apache-superset
