@@ -1345,3 +1345,21 @@ export function createCtasDatasource(vizOptions) {
       });
   };
 }
+
+
+export function sendChatMessage(vizOptions) {
+  return dispatch => {
+
+    return SupersetClient.get({
+      endpoint: "/api/v1/chat/message",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then(({ json }) => {
+        return json?.message;
+      })
+      .catch(() => {
+        const errorMsg = t('An error occurred while chating with bot');
+        return Promise.reject(new Error(errorMsg));
+      });
+  };
+}

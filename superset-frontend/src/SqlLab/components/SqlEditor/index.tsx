@@ -129,6 +129,7 @@ import KeyboardShortcutButton, {
   KEY_MAP,
   KeyboardShortcut,
 } from '../KeyboardShortcutButton';
+import Chatbot from '../ChatBot';
 
 const bootstrapData = getBootstrapData();
 const scheduledQueriesConf = bootstrapData?.common?.conf?.SCHEDULED_QUERIES;
@@ -949,84 +950,87 @@ const SqlEditor: FC<Props> = ({
     ? 'schemaPane-exit-done'
     : 'schemaPane-enter-done';
   return (
-    <StyledSqlEditor ref={sqlEditorRef} className="SqlEditor">
-      <CSSTransition classNames="schemaPane" in={!hideLeftBar} timeout={300}>
-        <ResizableSidebar
-          id={`sqllab:${queryEditor.id}`}
-          minWidth={SQL_EDITOR_LEFTBAR_WIDTH}
-          initialWidth={SQL_EDITOR_LEFTBAR_WIDTH}
-          enable={!hideLeftBar}
-        >
-          {adjustedWidth => (
-            <StyledSidebar
-              className={`schemaPane ${leftBarStateClass}`}
-              width={adjustedWidth}
-              hide={hideLeftBar}
-            >
-              <SqlEditorLeftBar
-                database={database}
-                queryEditorId={queryEditor.id}
-              />
-            </StyledSidebar>
-          )}
-        </ResizableSidebar>
-      </CSSTransition>
-      {shouldLoadQueryEditor ? (
-        <div
-          data-test="sqlEditor-loading"
-          css={css`
-            flex: 1;
-            padding: ${theme.gridUnit * 4}px;
-          `}
-        >
-          <Skeleton active />
-        </div>
-      ) : showEmptyState && !hasSqlStatement ? (
-        <EmptyState
-          image="vector.svg"
-          size="large"
-          title={t('Select a database to write a query')}
-          description={t(
-            'Choose one of the available databases from the panel on the left.',
-          )}
-        />
-      ) : (
-        queryPane()
-      )}
-      <Modal
-        show={showCreateAsModal}
-        title={t(createViewModalTitle)}
-        onHide={() => setShowCreateAsModal(false)}
-        footer={
-          <>
-            <Button onClick={() => setShowCreateAsModal(false)}>
-              {t('Cancel')}
-            </Button>
-            {createAs === CtasEnum.Table && (
-              <Button
-                buttonStyle="primary"
-                disabled={ctas.length === 0}
-                onClick={createTableAs}
+    <>
+      <Chatbot queryEditorId={queryEditor.id}/>
+      <StyledSqlEditor ref={sqlEditorRef} className="SqlEditor">
+        <CSSTransition classNames="schemaPane" in={!hideLeftBar} timeout={300}>
+          <ResizableSidebar
+            id={`sqllab:${queryEditor.id}`}
+            minWidth={SQL_EDITOR_LEFTBAR_WIDTH}
+            initialWidth={SQL_EDITOR_LEFTBAR_WIDTH}
+            enable={!hideLeftBar}
+          >
+            {adjustedWidth => (
+              <StyledSidebar
+                className={`schemaPane ${leftBarStateClass}`}
+                width={adjustedWidth}
+                hide={hideLeftBar}
               >
-                {t('Create')}
-              </Button>
+                <SqlEditorLeftBar
+                  database={database}
+                  queryEditorId={queryEditor.id}
+                />
+              </StyledSidebar>
             )}
-            {createAs === CtasEnum.View && (
-              <Button
-                buttonStyle="primary"
-                disabled={ctas.length === 0}
-                onClick={createViewAs}
-              >
-                {t('Create')}
-              </Button>
+          </ResizableSidebar>
+        </CSSTransition>
+        {shouldLoadQueryEditor ? (
+          <div
+            data-test="sqlEditor-loading"
+            css={css`
+              flex: 1;
+              padding: ${theme.gridUnit * 4}px;
+            `}
+          >
+            <Skeleton active />
+          </div>
+        ) : showEmptyState && !hasSqlStatement ? (
+          <EmptyState
+            image="vector.svg"
+            size="large"
+            title={t('Select a database to write a query')}
+            description={t(
+              'Choose one of the available databases from the panel on the left.',
             )}
-          </>
-        }
-      >
-        <span>{t('Name')}</span>
-        <Input placeholder={createModalPlaceHolder} onChange={ctasChanged} />
-      </Modal>
-    </StyledSqlEditor>
+          />
+        ) : (
+          queryPane()
+        )}
+        <Modal
+          show={showCreateAsModal}
+          title={t(createViewModalTitle)}
+          onHide={() => setShowCreateAsModal(false)}
+          footer={
+            <>
+              <Button onClick={() => setShowCreateAsModal(false)}>
+                {t('Cancel')}
+              </Button>
+              {createAs === CtasEnum.Table && (
+                <Button
+                  buttonStyle="primary"
+                  disabled={ctas.length === 0}
+                  onClick={createTableAs}
+                >
+                  {t('Create')}
+                </Button>
+              )}
+              {createAs === CtasEnum.View && (
+                <Button
+                  buttonStyle="primary"
+                  disabled={ctas.length === 0}
+                  onClick={createViewAs}
+                >
+                  {t('Create')}
+                </Button>
+              )}
+            </>
+          }
+        >
+          <span>{t('Name')}</span>
+          <Input placeholder={createModalPlaceHolder} onChange={ctasChanged} />
+        </Modal>
+      </StyledSqlEditor>
+    </>
   );
 };
 
