@@ -69,6 +69,9 @@ SQLALCHEMY_CHATBOT_URI = (
     f"{CHAT_HOST}:{CHAT_PORT}/{CHAT_DB}"
 )
 
+OPENAI_API_URL = os.getenv("OPENAI_API_URL")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
 REDIS_HOST = os.getenv("REDIS_HOST", "redis")
 REDIS_PORT = os.getenv("REDIS_PORT", "6379")
 REDIS_CELERY_DB = os.getenv("REDIS_CELERY_DB", "0")
